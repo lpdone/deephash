@@ -45,12 +45,12 @@ class ResNet(nn.Module):
     def __init__(self, hash_bit, res_model='ResNet50'):
         super(ResNet, self).__init__()
         model_resnet = resnet_dict[res_model](pretrained=True)
-        if res_model == 'ResNet50':
-            # pth = os.path.join(Path.project_root, 'save/ResNet50-CUB200.pth')
-            # model_resnet.fc = nn.Linear(2048, 200)
-            pth = os.path.join(Path.project_root, 'save/ResNet50-StanfordDogs.pth')
-            model_resnet.fc = nn.Linear(2048, 120)
-            model_resnet.load_state_dict(torch.load(pth), strict=True)
+        # if res_model == 'ResNet50':
+        #     # pth = os.path.join(Path.project_root, 'save/ResNet50-CUB200.pth')
+        #     # model_resnet.fc = nn.Linear(2048, 200)
+        #     pth = os.path.join(Path.project_root, 'save/ResNet50-StanfordDogs.pth')
+        #     model_resnet.fc = nn.Linear(2048, 120)
+        #     model_resnet.load_state_dict(torch.load(pth), strict=True)
         self.conv1 = model_resnet.conv1
         self.bn1 = model_resnet.bn1
         self.relu = model_resnet.relu

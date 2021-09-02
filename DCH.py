@@ -4,12 +4,14 @@
 
 from utils.tools import *
 from network import *
+from utils.data_utils import get_loader
 
 import os
 import torch
 import torch.optim as optim
 import time
 import numpy as np
+import sys
 
 from config.GPUManager import GPUManager
 from config.Path import Path
@@ -34,14 +36,17 @@ def get_config():
         "crop_size": 224,
         "batch_size": 64,
         "net": ResNet,
-        "dataset": 'StanfordDogs',
-        "epoch": 150,
+        "dataset": 'food101',
+        "data_root": '/data/ludi/datasets/food-101',
+        "epoch": 100,
         "test_map": 5,
-        "save_path": os.path.join(Path.project_root, "save/DCH"),
+        "save_path": './output/DCH',
         "device": device,
         "bit_list": [64, 48, 32, 16],
+        "topK": -1,
+        "n_class": 101,
     }
-    config = config_dataset(config)
+    # config = config_dataset(config)
     return config
 
 
@@ -85,7 +90,7 @@ class DCHLoss(torch.nn.Module):
 
 def train_val(config, bit):
     device = config["device"]
-    train_loader, test_loader, dataset_loader, num_train, num_test, num_dataset = get_data(config)
+    train_loader, test_loader, dataset_loader, num_train, num_test, num_dataset = get_loader(config["dataset"], config["data_root"])
     config["num_train"] = num_train
     net = config["net"](bit).to(device)
 
@@ -210,6 +215,8 @@ def test(config, bit):
 if __name__ == "__main__":
     config = get_config()
     print(config)
-    for bit in config["bit_list"]:
+    # for bit in config["bit_list"]:
+    bit = int(sys.argv[1])
+    train_val(config, bit)
         # train_val(config, bit)
-        test(config, bit)
+        # test(config, bit)

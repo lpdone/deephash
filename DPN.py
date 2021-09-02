@@ -13,6 +13,8 @@ import numpy as np
 import random
 
 from config.GPUManager import GPUManager
+from utils.data_utils import get_loader
+import sys
 
 torch.multiprocessing.set_sharing_strategy('file_system')
 
@@ -34,14 +36,16 @@ def get_config():
         "crop_size": 224,
         "batch_size": 64,
         "net": ResNet,
-        "dataset": 'StanfordDogs',
-        "epoch": 150,
+        "dataset": 'food101',
+        "epoch": 100,
         "test_map": 5,
-        "save_path": os.path.join(Path.project_root, 'save/DPN'),
+        "save_path": './output/DPN',
         "device": device,
         "bit_list": [64, 48, 32, 16],
+        "topK": -1,
+        "n_class": 101
     }
-    config = config_dataset(config)
+    # config = config_dataset(config)
     return config
 
 
@@ -98,7 +102,7 @@ class DPNLoss(torch.nn.Module):
 
 def train_val(config, bit):
     device = config["device"]
-    train_loader, test_loader, dataset_loader, num_train, num_test, num_dataset = get_data(config)
+    train_loader, test_loader, dataset_loader, num_train, num_test, num_dataset = get_loader(config["dataset"], config["data_root"])
     config["num_train"] = num_train
     net = config["net"](bit).to(device)
 
@@ -226,6 +230,8 @@ def test(config, bit):
 if __name__ == "__main__":
     config = get_config()
     print(config)
-    for bit in config["bit_list"]:
-        # train_val(config, bit)
-        test(config, bit)
+    # for bit in config["bit_list"]:
+    #     # train_val(config, bit)
+    #     test(config, bit)
+    bit = int(sys.argv[1])
+    train_val(config, bit)
