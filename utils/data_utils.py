@@ -34,7 +34,7 @@ def get_loader(dataset, data_root):
                             # cleaned=os.path.join(data_dir,'cleaned.dat'),
                             transform=transform_train
                             )
-        testset = CarsDataset(os.path.join(data_root,'cars_test_annos_withlabels.mat'),
+        testset = CarsDataset(os.path.join(data_root,'devkit/cars_test_annos_withlabels.mat'),
                             os.path.join(data_root,'cars_test'),
                             os.path.join(data_root,'devkit/cars_meta.mat'),
                             # cleaned=os.path.join(data_dir,'cleaned_test.dat'),

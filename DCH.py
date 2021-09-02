@@ -117,7 +117,8 @@ def train_val(config, bit):
         train_loss = 0
         for image, label, ind in train_loader:
             image = image.to(device)
-            label = label.to(device)
+            label = torch.eye(config["n_class"])[label].to(device)
+            # label = label.to(device)
 
             optimizer.zero_grad()
             u = net(image)
@@ -136,10 +137,10 @@ def train_val(config, bit):
 
         if (epoch + 1) % config["test_map"] == 0:
             # print("calculating test binary code......")
-            tst_binary, tst_label = compute_result(test_loader, net, device=device)
+            tst_binary, tst_label = compute_result(test_loader, net, device=device, n_class=config["n_class"])
 
             # print("calculating dataset binary code.......")\
-            trn_binary, trn_label = compute_result(dataset_loader, net, device=device)
+            trn_binary, trn_label = compute_result(dataset_loader, net, device=device, n_class=config["n_class"])
 
             # print("calculating map.......")
             mAP = CalcTopMap(trn_binary.numpy(), tst_binary.numpy(), trn_label.numpy(), tst_label.numpy(),

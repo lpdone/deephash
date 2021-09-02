@@ -36,14 +36,18 @@ def get_config():
         "crop_size": 224,
         "batch_size": 64,
         "net": ResNet,
-        "dataset": 'food101',
-        "epoch": 100,
+        # "dataset": 'food101',
+        # "data_root": '/data/ludi/datasets/food-101',
+        # "epoch": 100,
+        "dataset": 'car',
+        "data_root": '/data/ludi/datasets/StanfordCars',
+        "epoch": 300,
         "test_map": 5,
         "save_path": './output/DPN',
         "device": device,
         "bit_list": [64, 48, 32, 16],
         "topK": -1,
-        "n_class": 101
+        "n_class": 196,
     }
     # config = config_dataset(config)
     return config
@@ -129,7 +133,8 @@ def train_val(config, bit):
         train_loss = 0
         for image, label, ind in train_loader:
             image = image.to(device)
-            label = label.to(device)
+            label = torch.eye(config["n_class"])[label].to(device)
+            # label = label.to(device)
 
             optimizer.zero_grad()
             u = net(image)
@@ -151,10 +156,10 @@ def train_val(config, bit):
 
         if (epoch + 1) % config["test_map"] == 0:
             # print("calculating test binary code......")
-            tst_binary, tst_label = compute_result(test_loader, net, device=device)
+            tst_binary, tst_label = compute_result(test_loader, net, device=device, n_class=config["n_class"])
 
             # print("calculating dataset binary code.......")\
-            trn_binary, trn_label = compute_result(dataset_loader, net, device=device)
+            trn_binary, trn_label = compute_result(dataset_loader, net, device=device, n_class=config["n_class"])
 
             # print("calculating map.......")
             mAP = CalcTopMap(trn_binary.numpy(), tst_binary.numpy(), trn_label.numpy(), tst_label.numpy(),

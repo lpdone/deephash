@@ -108,11 +108,12 @@ def get_data(config):
            len(dsets["train_set"]), len(dsets["test"]), len(dsets["database"])
 
 
-def compute_result(dataloader, net, device):
+def compute_result(dataloader, net, device, n_class):
     bs, clses = [], []
     net.eval()
-    for img, cls, _ in tqdm(dataloader):
-        clses.append(cls)
+    for img, label, _ in tqdm(dataloader):
+        label = torch.eye(n_class)[label]
+        clses.append(label)
         bs.append((net(img.to(device))).data.cpu())
     return torch.cat(bs).sign(), torch.cat(clses)
 
