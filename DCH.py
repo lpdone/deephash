@@ -36,15 +36,18 @@ def get_config():
         "crop_size": 224,
         "batch_size": 64,
         "net": ResNet,
-        "dataset": 'food101',
-        "data_root": '/data/ludi/datasets/food-101',
-        "epoch": 100,
+        # "dataset": 'food101',
+        # "data_root": '/data/ludi/datasets/food-101',
+        # "epoch": 100,
+        "dataset": 'car',
+        "data_root": '/data/ludi/datasets/StanfordCars',
+        "epoch": 300,
         "test_map": 5,
         "save_path": './output/DCH',
         "device": device,
         "bit_list": [64, 48, 32, 16],
         "topK": -1,
-        "n_class": 101,
+        "n_class": 196,
     }
     # config = config_dataset(config)
     return config
